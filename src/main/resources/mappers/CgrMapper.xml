@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yjxxt.crm.dao.CustomerServeMapper" >
+    <resultMap id="BaseResultMap" type="com.yjxxt.crm.vo.Cgr" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="price" property="price" jdbcType="INTEGER" />
+        <result column="updata_data" property="updataData" jdbcType="DATE" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, name, price, updata_data
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from t_cgr
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+        delete from t_cgr
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.yjxxt.crm.vo.Cgr" >
+        insert into t_cgr (id, name, price,
+                           updata_data)
+        values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{price,jdbcType=INTEGER},
+                #{updataData,jdbcType=DATE})
+    </insert>
+    <insert id="insertSelective" parameterType="com.yjxxt.crm.vo.Cgr" >
+        insert into t_cgr
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="price != null" >
+                price,
+            </if>
+            <if test="updataData != null" >
+                updata_data,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null" >
+                #{price,jdbcType=INTEGER},
+            </if>
+            <if test="updataData != null" >
+                #{updataData,jdbcType=DATE},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yjxxt.crm.vo.Cgr" >
+        update t_cgr
+        <set >
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null" >
+                price = #{price,jdbcType=INTEGER},
+            </if>
+            <if test="updataData != null" >
+                updata_data = #{updataData,jdbcType=DATE},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yjxxt.crm.vo.Cgr" >
+        update t_cgr
+        set name = #{name,jdbcType=VARCHAR},
+            price = #{price,jdbcType=INTEGER},
+            updata_data = #{updataData,jdbcType=DATE}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <!--多条件分页查询数据-->
+    <select id="queryByParams" parameterType="com.yjxxt.crm.query.CustomerServeQuery" resultType="Cgr">
+        select
+        *
+        from
+        t_cgr
+        <where>
+            is_valid = 1
+            <if test="name != null and name != ''">
+                and  name like concat("%",#{name},"%")
+            </if>
+            <if test="price != null and price != ''">
+                and  price = #{price}
+            </if>
+        </where>
+    </select>
+    <!--批量删除-->
+    <update id="deleteBatch">
+        update
+        t_cgr
+        set
+        is_valid = 0
+        where
+        id in
+        <foreach collection="array" open="(" close=")" item="id" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+    <!--多条件分页查询数据-->
+    <select id="queryByParams2" parameterType="com.yjxxt.crm.query.CustomerServeQuery" resultType="Cgr">
+        select
+        *
+        from
+        t_cgr
+        <where>
+            is_valid = 0
+            <if test="name != null and name != ''">
+                and  name like concat("%",#{name},"%")
+            </if>
+            <if test="price != null and price != ''">
+                and  price = #{price}
+            </if>
+        </where>
+    </select>
+
+</mapper>

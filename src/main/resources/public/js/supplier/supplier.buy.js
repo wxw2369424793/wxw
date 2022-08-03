@@ -1,0 +1,51 @@
+layui.use(['table','layer',"form"],function(){
+    var layer = parent.layer === undefined ? layui.layer : top.layer,
+        $ = layui.jquery,
+        table = layui.table,
+        form = layui.form;
+
+    form.on('submit(buySupplier)', function (data) {
+
+        var checkStatus = table.checkStatus("supplierList");
+        // 提交数据时的加载层 （https://layer.layui.com/）
+        var index = layer.msg("数据提交中,请稍后...",{
+            icon:16, // 图标
+            time:false, // 不关闭
+            shade:0.8 // 设置遮罩的透明度
+        });
+        console.log(data.field);
+
+        let title = "<h3>采购管理 - 购买零件</h3>";
+        var url = ctx + "/supplier/buySupplier";
+        // 发送ajax请求
+        $.post(url, data.field, function (result) {
+            if (result.code === 200) {
+                layer.msg("操作成功!", {icon:6});
+                // 关闭加载层
+                layer.close(index);
+                // 关闭弹出层
+                layer.closeAll("iframe");
+                // 刷新父窗口,重新加载数据
+                parent.location.reload();
+
+            } else {
+                layer.msg(result.msg, {icon:5});
+            }
+        })
+
+        return false;
+
+    })
+
+    /**
+     * 关闭弹出层
+     */
+    $("#closeBtn").click(function () {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    });
+
+
+
+
+});
